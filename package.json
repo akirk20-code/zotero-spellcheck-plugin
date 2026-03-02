@@ -1,24 +1,24 @@
 {
-  "name": "zotero-plugin-template",
+  "name": "zotero-spellcheck-context",
   "type": "module",
-  "version": "3.1.0",
-  "description": "Zotero Plugin Template",
+  "version": "0.1.0",
+  "description": "Adds spell check suggestions and dictionary options to Zotero note editor context menu",
   "config": {
-    "addonName": "Zotero Plugin Template",
-    "addonID": "addontemplate@euclpts.com",
-    "addonRef": "addontemplate",
-    "addonInstance": "AddonTemplate",
-    "prefsPrefix": "extensions.zotero.addontemplate"
+    "addonName": "Zotero Spell Check Context Menu",
+    "addonID": "spellcheckcontext@kirka.local",
+    "addonRef": "spellcheckcontext",
+    "addonInstance": "SpellCheckContext",
+    "prefsPrefix": "extensions.zotero.spellcheckcontext"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/windingwind/zotero-plugin-template.git"
+    "url": "git+https://github.com/kirka/zotero-spellcheck-context.git"
   },
-  "author": "windingwind",
+  "author": "kirka",
   "bugs": {
-    "url": "https://github.com/windingwind/zotero-plugin-template/issues"
+    "url": "https://github.com/kirka/zotero-spellcheck-context/issues"
   },
-  "homepage": "https://github.com/windingwind/zotero-plugin-template#readme",
+  "homepage": "https://github.com/kirka/zotero-spellcheck-context#readme",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "zotero-plugin serve",

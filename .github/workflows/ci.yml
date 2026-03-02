@@ -23,6 +23,8 @@ jobs:
           cache: npm
       - name: Install deps
         run: npm install
+      - name: Run Security Audit
+        run: npm audit --audit-level=moderate
       - name: Run Lint
         run: npm run lint:check
 

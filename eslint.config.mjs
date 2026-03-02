@@ -7,9 +7,15 @@ export default zotero({
     {
       files: ["**/*.ts"],
       rules: {
-        // We disable this rule here because the template
-        // contains some unused examples and variables
-        "@typescript-eslint/no-unused-vars": "off",
+        // Enable unused vars checking to maintain clean code
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            argsIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+            caughtErrorsIgnorePattern: "^_",
+          },
+        ],
       },
     },
   ],

@@ -33,7 +33,10 @@ export default defineConfig({
           __env__: `"${process.env.NODE_ENV}"`,
         },
         bundle: true,
-        target: "firefox115",
+        // IMPORTANT: Monitor Zotero's Firefox version updates
+        // Zotero 7+ is based on Firefox ESR. Update this target when Zotero updates its base.
+        // Check: https://www.zotero.org/support/dev/client_coding/building_the_standalone_client
+        target: "firefox115", // Firefox 115 ESR - Update as needed
         outfile: `.scaffold/build/addon/content/scripts/${pkg.config.addonRef}.js`,
       },
     ],

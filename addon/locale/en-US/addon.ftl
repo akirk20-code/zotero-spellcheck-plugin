@@ -1,11 +1,5 @@
-startup-begin = Addon is loading
-startup-finish = Addon is ready
-menuitem-label = Addon Template: Helper Examples
-menupopup-label = Addon Template: Menupopup
-menuitem-submenulabel = Addon Template
-menuitem-filemenulabel = Addon Template: File Menuitem
-prefs-title = Template
-prefs-table-title = Title
-prefs-table-detail = Detail
-tabpanel-lib-tab-label = Lib Tab
-tabpanel-reader-tab-label = Reader Tab
+startup-begin = Spell Check plugin is loading
+startup-finish = Spell Check plugin is ready
+prefs-title = Spell Check
+spellcheck-add-to-dictionary = Add to Dictionary
+spellcheck-no-suggestions = (No suggestions)
