@@ -24,16 +24,17 @@ export class ReaderMonitor {
     | ((doc: Document, iframeWindow: Window) => void)
     | null = null;
   private static observers: MutationObserver[] = [];
-  private static scanTimers = new Map<Document, ReturnType<typeof setTimeout>>();
+  private static scanTimers = new Map<
+    Document,
+    ReturnType<typeof setTimeout>
+  >();
   private static mutationCount = 0;
 
   // Store handler references for cleanup
-  private static toolbarHandler:
-    | ((event: any) => void | Promise<void>)
-    | null = null;
-  private static sidebarHandler:
-    | ((event: any) => void | Promise<void>)
-    | null = null;
+  private static toolbarHandler: ((event: any) => void | Promise<void>) | null =
+    null;
+  private static sidebarHandler: ((event: any) => void | Promise<void>) | null =
+    null;
 
   /**
    * Start monitoring for PDF reader comment fields.
@@ -145,13 +146,14 @@ export class ReaderMonitor {
     // Also monitor nested iframes (PDF viewer may contain editable fields)
     try {
       const iframes = doc.querySelectorAll("iframe");
-      logToFile("[ReaderMonitor] Scanning " + iframes.length + " nested iframes");
+      logToFile(
+        "[ReaderMonitor] Scanning " + iframes.length + " nested iframes",
+      );
       for (let i = 0; i < iframes.length; i++) {
         try {
           const nestedFrame = iframes[i] as HTMLIFrameElement;
           const nestedDoc =
-            nestedFrame.contentDocument ||
-            nestedFrame.contentWindow?.document;
+            nestedFrame.contentDocument || nestedFrame.contentWindow?.document;
           const nestedWin = nestedFrame.contentWindow;
           if (nestedDoc && nestedWin) {
             logToFile(
@@ -170,10 +172,7 @@ export class ReaderMonitor {
           }
         } catch (e) {
           logToFile(
-            "[ReaderMonitor] Cannot access nested iframe[" +
-              i +
-              "]: " +
-              e,
+            "[ReaderMonitor] Cannot access nested iframe[" + i + "]: " + e,
           );
         }
       }
@@ -213,10 +212,7 @@ export class ReaderMonitor {
         this.mutationCount === 20
       ) {
         logToFile(
-          "[ReaderMonitor] Mutation #" +
-            this.mutationCount +
-            " in " +
-            label,
+          "[ReaderMonitor] Mutation #" + this.mutationCount + " in " + label,
         );
       }
       this.debouncedScan(doc, win);
@@ -228,9 +224,7 @@ export class ReaderMonitor {
       attributeFilter: ["contenteditable"],
     });
     this.observers.push(observer);
-    logToFile(
-      "[ReaderMonitor] MutationObserver attached to " + label,
-    );
+    logToFile("[ReaderMonitor] MutationObserver attached to " + label);
   }
 
   /**
@@ -301,8 +295,7 @@ export class ReaderMonitor {
           el.tagName +
           (el.id ? "#" + el.id : "") +
           (el.className
-            ? "." +
-              String(el.className).split(" ").slice(0, 2).join(".")
+            ? "." + String(el.className).split(" ").slice(0, 2).join(".")
             : ""),
       );
       logToFile("[ReaderMonitor] Body children: " + tags.join(", "));
@@ -325,9 +318,7 @@ export class ReaderMonitor {
 
       // Count existing textareas and contenteditable elements
       const textareas = doc.querySelectorAll("textarea");
-      const contentEditables = doc.querySelectorAll(
-        '[contenteditable="true"]',
-      );
+      const contentEditables = doc.querySelectorAll('[contenteditable="true"]');
       logToFile(
         "[ReaderMonitor] Existing textareas: " +
           textareas.length +

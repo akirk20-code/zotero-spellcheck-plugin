@@ -10,8 +10,9 @@ var chromeHandle;
 // Helper to append to our debug log file
 function logToFile(msg) {
   try {
-    var file = Components.classes["@mozilla.org/file/local;1"]
-      .createInstance(Components.interfaces.nsIFile);
+    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(
+      Components.interfaces.nsIFile,
+    );
     file.initWithPath(
       Components.classes["@mozilla.org/file/directory_service;1"]
         .getService(Components.interfaces.nsIProperties)

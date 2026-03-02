@@ -10,9 +10,8 @@ import { logToFile } from "../utils/log";
 export class EditorMonitor {
   private static originalRegister: Function | null = null;
   private static attachedEditors = new WeakSet<Zotero.EditorInstance>();
-  private static callback:
-    | ((editor: Zotero.EditorInstance) => void)
-    | null = null;
+  private static callback: ((editor: Zotero.EditorInstance) => void) | null =
+    null;
 
   /**
    * Start monitoring for note editor instances.
@@ -23,8 +22,9 @@ export class EditorMonitor {
 
     // Monkey-patch Zotero.Notes.registerEditorInstance to intercept new editors
     try {
-      this.originalRegister =
-        Zotero.Notes.registerEditorInstance.bind(Zotero.Notes);
+      this.originalRegister = Zotero.Notes.registerEditorInstance.bind(
+        Zotero.Notes,
+      );
       const monitor = this;
       Zotero.Notes.registerEditorInstance = function (
         instance: Zotero.EditorInstance,
@@ -40,9 +40,7 @@ export class EditorMonitor {
 
     // Check already-open editors
     const existing = Zotero.Notes._editorInstances;
-    logToFile(
-      "[EditorMonitor] " + existing.length + " editors already open",
-    );
+    logToFile("[EditorMonitor] " + existing.length + " editors already open");
     for (const instance of existing) {
       this.onEditorRegistered(instance);
     }
@@ -69,9 +67,7 @@ export class EditorMonitor {
         logToFile("[EditorMonitor] _initPromise resolved");
       }
 
-      logToFile(
-        "[EditorMonitor] _iframeWindow? " + !!instance._iframeWindow,
-      );
+      logToFile("[EditorMonitor] _iframeWindow? " + !!instance._iframeWindow);
 
       if (!instance._iframeWindow) {
         logToFile("[EditorMonitor] No _iframeWindow, retrying in 1s...");

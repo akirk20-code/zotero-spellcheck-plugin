@@ -31,9 +31,7 @@ export class SpellMenu {
     if (!iframeWin) return;
 
     const iframeDoc = iframeWin.document;
-    Zotero.debug(
-      `SpellMenu: iframeDoc URL: ${iframeDoc?.location?.href}`,
-    );
+    Zotero.debug(`SpellMenu: iframeDoc URL: ${iframeDoc?.location?.href}`);
 
     // Log the DOM structure to understand what we're working with
     const allIframes = iframeDoc.querySelectorAll("iframe");
@@ -46,9 +44,7 @@ export class SpellMenu {
       '[contenteditable="true"]',
     ) as HTMLElement | null;
 
-    Zotero.debug(
-      `SpellMenu: contenteditable at top level? ${!!editable}`,
-    );
+    Zotero.debug(`SpellMenu: contenteditable at top level? ${!!editable}`);
 
     // If not found, search inside nested iframes
     if (!editable && allIframes.length > 0) {
@@ -99,11 +95,16 @@ export class SpellMenu {
     }
 
     if (!editable) {
-      logToFile("[SpellMenu] No contenteditable found - using fallback on iframeDoc");
+      logToFile(
+        "[SpellMenu] No contenteditable found - using fallback on iframeDoc",
+      );
       iframeDoc.addEventListener(
         "contextmenu",
         (event: MouseEvent) => {
-          logToFile("[SpellMenu] [fallback] contextmenu fired on " + (event.target as Element)?.tagName);
+          logToFile(
+            "[SpellMenu] [fallback] contextmenu fired on " +
+              (event.target as Element)?.tagName,
+          );
           this.handleContextMenu(event, editorInstance);
         },
         true,
@@ -116,7 +117,10 @@ export class SpellMenu {
     editable.addEventListener(
       "contextmenu",
       (event: MouseEvent) => {
-        logToFile("[SpellMenu] contextmenu fired on " + (event.target as Element)?.tagName);
+        logToFile(
+          "[SpellMenu] contextmenu fired on " +
+            (event.target as Element)?.tagName,
+        );
         this.handleContextMenu(event, editorInstance);
       },
       true, // capture phase to get it before ProseMirror
@@ -176,9 +180,7 @@ export class SpellMenu {
     event.stopPropagation();
 
     const suggestions = SpellEngine.getSuggestions(wordInfo.word);
-    logToFile(
-      "[SpellMenu] Suggestions: " + JSON.stringify(suggestions),
-    );
+    logToFile("[SpellMenu] Suggestions: " + JSON.stringify(suggestions));
 
     try {
       this.showPopup(
@@ -223,10 +225,7 @@ export class SpellMenu {
         );
       } else {
         // Fallback: caretRangeFromPoint (WebKit)
-        const caretRange = (doc as any).caretRangeFromPoint?.(
-          clientX,
-          clientY,
-        );
+        const caretRange = (doc as any).caretRangeFromPoint?.(clientX, clientY);
         if (caretRange) {
           textNode = caretRange.startContainer;
           offset = caretRange.startOffset;
@@ -242,21 +241,32 @@ export class SpellMenu {
       }
 
       if (!textNode) {
-        logToFile("[SpellMenu] No caret position found at (" + clientX + "," + clientY + ")");
+        logToFile(
+          "[SpellMenu] No caret position found at (" +
+            clientX +
+            "," +
+            clientY +
+            ")",
+        );
         return null;
       }
 
       // Node.TEXT_NODE === 3 (use literal since Node global may not exist in sandbox)
       if (textNode.nodeType !== 3) {
-        logToFile("[SpellMenu] Not a text node: " + textNode.nodeName + " type=" + textNode.nodeType);
+        logToFile(
+          "[SpellMenu] Not a text node: " +
+            textNode.nodeName +
+            " type=" +
+            textNode.nodeType,
+        );
         return null;
       }
 
       const text = textNode.textContent || "";
       logToFile(
-        "[SpellMenu] Text content: \"" +
+        '[SpellMenu] Text content: "' +
           text.substring(Math.max(0, offset - 10), offset + 10) +
-          "\" offset=" +
+          '" offset=' +
           offset,
       );
 
@@ -270,11 +280,11 @@ export class SpellMenu {
 
       const word = text.substring(start, end);
       if (!word || word.length < 2) {
-        logToFile("[SpellMenu] Word too short or empty: \"" + word + "\"");
+        logToFile('[SpellMenu] Word too short or empty: "' + word + '"');
         return null;
       }
 
-      logToFile("[SpellMenu] Detected word: \"" + word + "\"");
+      logToFile('[SpellMenu] Detected word: "' + word + '"');
 
       const wordRange = doc.createRange();
       wordRange.setStart(textNode, start);
@@ -480,9 +490,7 @@ export class SpellMenu {
     element.addEventListener(
       "contextmenu",
       (event: MouseEvent) => {
-        logToFile(
-          "[SpellMenu] Reader contextmenu on " + element.tagName,
-        );
+        logToFile("[SpellMenu] Reader contextmenu on " + element.tagName);
         this.handleReaderContextMenu(event, element, iframeWindow);
       },
       true,
@@ -502,10 +510,7 @@ export class SpellMenu {
    * dynamically created after per-element listeners were attached.
    * Idempotent — safe to call multiple times per document.
    */
-  static attachToReaderDocument(
-    doc: Document,
-    iframeWindow: Window,
-  ): void {
+  static attachToReaderDocument(doc: Document, iframeWindow: Window): void {
     if (this.attachedReaderDocs.has(doc)) return;
     this.attachedReaderDocs.add(doc);
 
@@ -538,9 +543,7 @@ export class SpellMenu {
   /**
    * Find the nearest editable element (textarea, input, or contenteditable).
    */
-  private static findEditableElement(
-    target: HTMLElement,
-  ): HTMLElement | null {
+  private static findEditableElement(target: HTMLElement): HTMLElement | null {
     if (!target) return null;
 
     // Check if target itself is editable
@@ -594,7 +597,8 @@ export class SpellMenu {
     }
 
     logToFile(
-      "[SpellMenu] Reader word: " + (wordInfo ? '"' + wordInfo.word + '"' : "null"),
+      "[SpellMenu] Reader word: " +
+        (wordInfo ? '"' + wordInfo.word + '"' : "null"),
     );
     if (!wordInfo) return;
 
@@ -643,9 +647,7 @@ export class SpellMenu {
    * Get word at caret position in a textarea.
    * In Firefox, right-clicking moves the caret to the click position.
    */
-  private static getWordInTextarea(
-    textarea: HTMLTextAreaElement,
-  ): {
+  private static getWordInTextarea(textarea: HTMLTextAreaElement): {
     word: string;
     textareaStart: number;
     textareaEnd: number;
@@ -674,13 +676,7 @@ export class SpellMenu {
 
       const word = text.substring(start, end);
       logToFile(
-        "[SpellMenu] textarea word: \"" +
-          word +
-          "\" [" +
-          start +
-          ":" +
-          end +
-          "]",
+        '[SpellMenu] textarea word: "' + word + '" [' + start + ":" + end + "]",
       );
       if (!word || word.length < 2) return null;
 
@@ -813,8 +809,12 @@ export class SpellMenu {
         }
 
         // Fire events so React picks up the change
-        textarea.dispatchEvent(new iframeWindow.Event("input", { bubbles: true }));
-        textarea.dispatchEvent(new iframeWindow.Event("change", { bubbles: true }));
+        textarea.dispatchEvent(
+          new iframeWindow.Event("input", { bubbles: true }),
+        );
+        textarea.dispatchEvent(
+          new iframeWindow.Event("change", { bubbles: true }),
+        );
 
         // Restore cursor position
         const newPos = wordInfo.textareaStart + replacement.length;

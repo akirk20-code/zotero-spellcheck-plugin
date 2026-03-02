@@ -48,11 +48,16 @@ async function onStartup() {
   logToFile("[hooks] Starting ReaderMonitor");
   ReaderMonitor.start(
     (element, iframeWindow) => {
-      logToFile("[hooks] ReaderMonitor callback fired - attaching SpellMenu to " + element.tagName);
+      logToFile(
+        "[hooks] ReaderMonitor callback fired - attaching SpellMenu to " +
+          element.tagName,
+      );
       SpellMenu.attachToReaderElement(element, iframeWindow);
     },
     (doc, iframeWindow) => {
-      logToFile("[hooks] ReaderMonitor document ready - attaching document-level listener");
+      logToFile(
+        "[hooks] ReaderMonitor document ready - attaching document-level listener",
+      );
       SpellMenu.attachToReaderDocument(doc, iframeWindow);
     },
   );
