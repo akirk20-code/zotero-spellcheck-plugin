@@ -298,25 +298,6 @@ export class SpellMenu {
   }
 
   /**
-   * Get the chrome (XUL) window for an editor instance.
-   * Handles inline pane, tab, and separate window contexts.
-   */
-  private static getChromeWindow(
-    editorInstance: Zotero.EditorInstance,
-  ): Window | null {
-    try {
-      // The iframe's top-level window is the chrome window
-      const top = editorInstance._iframeWindow?.top;
-      if (top) return top;
-    } catch {
-      // Cross-origin restriction
-    }
-
-    // Fallback to main Zotero window
-    return Zotero.getMainWindow();
-  }
-
-  /**
    * Show the spell check popup menu at the mouse position.
    */
   private static showPopup(
@@ -417,22 +398,24 @@ export class SpellMenu {
   private static replaceWord(
     wordRange: Range,
     replacement: string,
-    editorInstance: Zotero.EditorInstance,
+    _editorInstance: Zotero.EditorInstance,
   ): void {
     try {
-      const iframeWin = editorInstance._iframeWindow;
-      if (!iframeWin) return;
-
-      const iframeDoc = iframeWin.document;
+      // Use the range's own document context — handles nested iframe editors
+      // where the editable may be in a different document than _iframeWindow.
+      const rangeDoc = wordRange.startContainer.ownerDocument;
+      if (!rangeDoc) return;
+      const rangeWin = rangeDoc.defaultView;
+      if (!rangeWin) return;
 
       // Select the misspelled word
-      const selection = iframeWin.getSelection();
+      const selection = rangeWin.getSelection();
       if (!selection) return;
       selection.removeAllRanges();
       selection.addRange(wordRange);
 
       // Replace via execCommand — ProseMirror handles this as an input event
-      iframeDoc.execCommand("insertText", false, replacement);
+      rangeDoc.execCommand("insertText", false, replacement);
 
       Zotero.debug(`SpellMenu: Replaced with "${replacement}"`);
     } catch (e) {

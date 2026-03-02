@@ -7,24 +7,26 @@
 
 var chromeHandle;
 
-// Helper to append to our debug log file
+// Helper to append to our debug log file (dev only)
 function logToFile(msg) {
+  if (typeof __env__ !== "undefined" && __env__ !== "development") return;
   try {
+    var tmpDir = Components.classes["@mozilla.org/file/directory_service;1"]
+      .getService(Components.interfaces.nsIProperties)
+      .get("TmpD", Components.interfaces.nsIFile);
+    var clone = tmpDir.clone();
+    clone.append("spellcheck-bootstrap.log");
     var file = Components.classes["@mozilla.org/file/local;1"].createInstance(
       Components.interfaces.nsIFile,
     );
-    file.initWithPath(
-      Components.classes["@mozilla.org/file/directory_service;1"]
-        .getService(Components.interfaces.nsIProperties)
-        .get("TmpD", Components.interfaces.nsIFile).path +
-        "\\spellcheck-bootstrap.log",
-    );
+    file.initWithPath(clone.path);
     var fos = Components.classes[
       "@mozilla.org/network/file-output-stream;1"
     ].createInstance(Components.interfaces.nsIFileOutputStream);
-    // 0x02=write, 0x08=create, 0x10=append
-    fos.init(file, 0x02 | 0x08 | 0x10, 0o644, 0);
-    var line = new Date().toISOString() + " " + msg + "\n";
+    // 0x02=write, 0x08=create, 0x10=append; 0o600=owner-only
+    fos.init(file, 0x02 | 0x08 | 0x10, 0o600, 0);
+    var sanitized = msg.replace(/[\r\n\x00]/g, "\\n");
+    var line = new Date().toISOString() + " " + sanitized + "\n";
     fos.write(line, line.length);
     fos.close();
   } catch (e) {
