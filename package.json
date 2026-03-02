@@ -1,7 +1,7 @@
 {
   "name": "zotero-spellcheck-context",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Adds spell check suggestions and dictionary options to Zotero note editor context menu",
   "config": {
     "addonName": "Zotero Spell Check Context Menu",

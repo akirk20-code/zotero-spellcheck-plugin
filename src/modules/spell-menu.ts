@@ -6,6 +6,7 @@
  * For correctly-spelled words, Zotero's normal context menu appears.
  */
 
+import { config } from "../../package.json";
 import { SpellEngine } from "./spell-engine";
 import { getString } from "../utils/locale";
 import { logToFile } from "../utils/log";
@@ -457,6 +458,15 @@ export class SpellMenu {
         element.tagName +
         (element.className ? "." + element.className : ""),
     );
+
+    // Disable native red underlines if the user preference is set
+    const disableUnderlines = Zotero.Prefs.get(
+      `${config.prefsPrefix}.disableUnderlines`,
+      true,
+    ) as boolean;
+    if (disableUnderlines) {
+      element.setAttribute("spellcheck", "false");
+    }
 
     element.addEventListener(
       "contextmenu",

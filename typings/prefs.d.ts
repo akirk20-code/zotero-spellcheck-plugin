@@ -9,6 +9,7 @@ declare namespace _ZoteroTypes {
     PluginPrefsMap: {
       "enable": boolean;
       "suggestionCount": number;
+      "disableUnderlines": boolean;
     };
   }
 }

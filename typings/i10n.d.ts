@@ -4,6 +4,7 @@
 // @ts-nocheck
 export type FluentMessageId =
   | 'pref-description'
+  | 'pref-disable-underlines'
   | 'pref-help'
   | 'pref-suggestion-count'
   | 'pref-suggestion-count-hint'
