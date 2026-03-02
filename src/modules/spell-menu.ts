@@ -137,6 +137,9 @@ export class SpellMenu {
     event: MouseEvent,
     editorInstance: Zotero.EditorInstance,
   ): void {
+    // Check if plugin is enabled
+    if (!Zotero.Prefs.get(`${config.prefsPrefix}.enable`, true)) return;
+
     logToFile("[SpellMenu] handleContextMenu called");
     const doc = (event.target as Element).ownerDocument;
     if (!doc) {
@@ -555,6 +558,9 @@ export class SpellMenu {
     element: HTMLElement,
     iframeWindow: Window,
   ): void {
+    // Check if plugin is enabled
+    if (!Zotero.Prefs.get(`${config.prefsPrefix}.enable`, true)) return;
+
     logToFile("[SpellMenu] handleReaderContextMenu called");
 
     let wordInfo: {
