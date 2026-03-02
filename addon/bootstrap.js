@@ -25,6 +25,7 @@ function logToFile(msg) {
     ].createInstance(Components.interfaces.nsIFileOutputStream);
     // 0x02=write, 0x08=create, 0x10=append; 0o600=owner-only
     fos.init(file, 0x02 | 0x08 | 0x10, 0o600, 0);
+    // eslint-disable-next-line no-control-regex -- intentional null-byte stripping
     var sanitized = msg.replace(/[\r\n\x00]/g, "\\n");
     var line = new Date().toISOString() + " " + sanitized + "\n";
     fos.write(line, line.length);

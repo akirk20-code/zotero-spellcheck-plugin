@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kirka/zotero-spellcheck-context.git"
+    "url": "git+https://github.com/akirk20-code/zotero-spellcheck-plugin.git"
   },
-  "author": "kirka",
+  "author": "akirk20-code",
   "bugs": {
-    "url": "https://github.com/kirka/zotero-spellcheck-context/issues"
+    "url": "https://github.com/akirk20-code/zotero-spellcheck-plugin/issues"
   },
-  "homepage": "https://github.com/kirka/zotero-spellcheck-context#readme",
+  "homepage": "https://github.com/akirk20-code/zotero-spellcheck-plugin#readme",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "zotero-plugin serve",

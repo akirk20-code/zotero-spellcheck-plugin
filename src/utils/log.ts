@@ -28,6 +28,7 @@ export function logToFile(msg: string): void {
     fos.init(file, 0x02 | 0x08 | 0x10, 0o600, 0);
 
     // Sanitize control characters to prevent log injection
+    // eslint-disable-next-line no-control-regex -- intentional null-byte stripping
     const sanitized = msg.replace(/[\r\n\x00]/g, "\\n");
     const line = new Date().toISOString() + " " + sanitized + "\n";
     fos.write(line, line.length);

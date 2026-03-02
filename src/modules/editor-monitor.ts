@@ -25,14 +25,13 @@ export class EditorMonitor {
       this.originalRegister = Zotero.Notes.registerEditorInstance.bind(
         Zotero.Notes,
       );
-      const monitor = this;
-      Zotero.Notes.registerEditorInstance = function (
+      Zotero.Notes.registerEditorInstance = ((
         instance: Zotero.EditorInstance,
-      ) {
+      ) => {
         logToFile("[EditorMonitor] registerEditorInstance intercepted!");
-        monitor.originalRegister!.call(Zotero.Notes, instance);
-        monitor.onEditorRegistered(instance);
-      };
+        this.originalRegister!.call(Zotero.Notes, instance);
+        this.onEditorRegistered(instance);
+      }) as typeof Zotero.Notes.registerEditorInstance;
       logToFile("[EditorMonitor] Monkey-patch applied");
     } catch (e) {
       logToFile("[EditorMonitor] Monkey-patch FAILED: " + e);

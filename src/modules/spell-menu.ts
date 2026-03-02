@@ -74,7 +74,7 @@ export class SpellMenu {
               break;
             }
           }
-        } catch (e) {
+        } catch {
           Zotero.debug(
             `SpellMenu: Cannot access nested iframe[${i}] (cross-origin?)`,
           );
@@ -340,7 +340,7 @@ export class SpellMenu {
     addDict.addEventListener("command", () => {
       SpellEngine.addToDictionary(wordInfo.word);
       // Force re-spellcheck by toggling the spellcheck attribute
-      this.triggerRespellcheck(editorInstance);
+      this.triggerRespellcheck(wordInfo.range);
     });
     popup.appendChild(addDict);
 
@@ -348,29 +348,17 @@ export class SpellMenu {
     popup.appendChild(chromeDoc.createXULElement("menuseparator"));
 
     // --- Standard clipboard actions ---
-    const iframeWin = editorInstance._iframeWindow;
-    const iframeDoc = iframeWin?.document;
+    // Use the range's document so commands target the correct doc in nested iframes
+    const rangeDoc = wordInfo.range.startContainer.ownerDocument;
 
-    const cutItem = chromeDoc.createXULElement("menuitem") as any;
-    cutItem.setAttribute("label", "Cut");
-    cutItem.addEventListener("command", () => {
-      iframeDoc?.execCommand("cut");
-    });
-    popup.appendChild(cutItem);
-
-    const copyItem = chromeDoc.createXULElement("menuitem") as any;
-    copyItem.setAttribute("label", "Copy");
-    copyItem.addEventListener("command", () => {
-      iframeDoc?.execCommand("copy");
-    });
-    popup.appendChild(copyItem);
-
-    const pasteItem = chromeDoc.createXULElement("menuitem") as any;
-    pasteItem.setAttribute("label", "Paste");
-    pasteItem.addEventListener("command", () => {
-      iframeDoc?.execCommand("paste");
-    });
-    popup.appendChild(pasteItem);
+    for (const cmd of ["cut", "copy", "paste"] as const) {
+      const mi = chromeDoc.createXULElement("menuitem") as any;
+      mi.setAttribute("label", cmd.charAt(0).toUpperCase() + cmd.slice(1));
+      mi.addEventListener("command", () => {
+        rangeDoc?.execCommand(cmd);
+      });
+      popup.appendChild(mi);
+    }
 
     // Append to chrome document and show
     const root = chromeDoc.documentElement ?? chromeDoc.body;
@@ -428,14 +416,14 @@ export class SpellMenu {
    * Force the editor to re-run spell checking.
    * Toggles the spellcheck attribute to make Gecko recheck.
    */
-  private static triggerRespellcheck(
-    editorInstance: Zotero.EditorInstance,
-  ): void {
+  private static triggerRespellcheck(wordRange: Range): void {
     try {
-      const iframeDoc = editorInstance._iframeWindow?.document;
-      if (!iframeDoc) return;
+      const rangeDoc = wordRange.startContainer.ownerDocument;
+      if (!rangeDoc) return;
+      const rangeWin = rangeDoc.defaultView;
+      if (!rangeWin) return;
 
-      const editable = iframeDoc.querySelector(
+      const editable = rangeDoc.querySelector(
         '[contenteditable="true"]',
       ) as HTMLElement | null;
       if (!editable) return;
@@ -443,7 +431,7 @@ export class SpellMenu {
       // Toggle spellcheck off and on to force re-check
       editable.setAttribute("spellcheck", "false");
       // Use requestAnimationFrame to ensure the change takes effect
-      editorInstance._iframeWindow.requestAnimationFrame(() => {
+      rangeWin.requestAnimationFrame(() => {
         editable.setAttribute("spellcheck", "true");
       });
     } catch (e) {
