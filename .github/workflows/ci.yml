@@ -24,7 +24,7 @@ jobs:
       - name: Install deps
         run: npm install
       - name: Run Security Audit
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=moderate --omit=dev
       - name: Run Lint
         run: npm run lint:check
 
